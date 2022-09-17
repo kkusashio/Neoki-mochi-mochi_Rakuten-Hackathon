@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    platform: linux/x86_64
+    image: mysql:8.0
+    environment:
+      TZ: 'Asia/Tokyo'
+    cap_add:
+      - SYS_NICE  
+    volumes:
+      - ./db.mysql:/var/lib/mysql
+    env_file:
+      - .env.development
+  backend:
+    build: 
+      context: mochimochi-server
+      dockerfile: Dockerfile.development
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./mochimochi-server:/src/backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    entrypoint:
+      - dockerize
+      - -timeout
+      - 120s
+      - -wait
+      - tcp://db:3306
+    env_file:
+      - .env.development
+  frontend:
+    build: 
+      context: mochimochi-frontend
+      dockerfile: Dockerfile.development
+    command: yarn serve
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./mochimochi-frontend:/src/frontend
+      - node_modules:/src/frontend/node_modules
+    stdin_open: true
+    tty: true
+volumes:
+  local_info:
+  node_modules:

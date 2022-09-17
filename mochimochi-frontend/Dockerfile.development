@@ -1,0 +1,4 @@
+FROM node:14.17.1
+WORKDIR /src/frontend
+COPY package.json yarn.lock /src/frontend/
+RUN yarn
