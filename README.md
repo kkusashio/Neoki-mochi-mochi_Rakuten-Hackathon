@@ -1,4 +1,5 @@
 # ねおきもちもち
+#楽天夏の陣ハッカソン(全体準優勝)
 
 ## Requirements
 - docker-compose
